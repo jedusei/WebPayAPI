@@ -62,24 +62,25 @@
         const transactionId = "<%= _id %>";
         const form = document.getElementById("form");
         async function endPayment(accepted) {
-            if (form.reportValidity()) {
-                $.ajax({
-                    url: '/api/end-payment',
-                    method: 'POST',
-                    dataType: 'json',
-                    data: { transactionId, accepted },
-                    success: function (data) {
-                        accepted = (accepted == 'yes' ? true : false);
-                        if (accepted) {
-                            alert("Payment Successful!");
-                        }
-                        window.location = data.redirectURL+"?accepted="+accepted;
-                    },
-                    error: function () {
-                        alert("Something went wrong. Please refresh the page and try again.");
+            if (accepted == 'yes' && !form.reportValidity())
+                return;
+                
+            $.ajax({
+                url: '/api/end-payment',
+                method: 'POST',
+                dataType: 'json',
+                data: { transactionId, accepted },
+                success: function (data) {
+                    accepted = (accepted == 'yes' ? true : false);
+                    if (accepted) {
+                        alert("Payment Successful!");
                     }
-                });
-            }
+                    window.location = data.redirectURL+"?accepted="+accepted;
+                },
+                error: function () {
+                    alert("Something went wrong. Please refresh the page and try again.");
+                }
+            });
         }
     </script>
 </body>
