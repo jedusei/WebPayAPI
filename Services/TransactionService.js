@@ -98,7 +98,7 @@ module.exports = {
     },
 
     // Get transaction history (sorted by date in descending order i.e. latest first)
-    getTransactions: (merchantId) => {
-        return Transaction.find({ merchantId }, { _id: 0, id: "$_id" }).sort({ date: -1 }).lean();
+    getTransactions: () => {
+        return Transaction.find().sort({ date: -1 }).lean();
     }
 }
