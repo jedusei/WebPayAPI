@@ -9,7 +9,6 @@ const cartItemSchema = new Schema({
 
 // This schema represents the structure of a transaction document in the database
 const transactionSchema = new Schema({
-    merchantId: SchemaTypes.ObjectId, // Client ID of the merchant associated with this transaction
     date: Date,
     type: String, // Either 'Payment' or 'Refund'
     // Properties for normal transactions *only*
