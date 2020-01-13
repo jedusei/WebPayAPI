@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WebPay Checkout</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="col p-3 text-center bg-white">
+        <h1 class="mt-3">WebPay</h1>
+        <h5 class="mb-3">E-Payment Portal</h5>
+        <h3><u>Cart</u></h3>
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(let i=0; i<cart.length; i++){ let item=cart[i]; %>
+                <tr>
+                    <th scope="row"><%= (i+1) %></th>
+                    <td><%= item.name %></td>
+                    <td><%= item.quantity %></td>
+                    <td>GH₵ <%= item.price.toFixed(2) %></td>
+                </tr>
+                <% }%>
+            </tbody>
+        </table>
+        <h3>Total Price: GH₵ <%= amount.toFixed(2) %></h3>
+        <hr>
+        <img src="../images/mtn-mobile_money.png" width="50px">
+        <img src="../images/vodafone-cash.jpg" width="50px">
+        <img src="../images/airtel-money-logo.png" width="50px">
+        <form id="form" class="form-group mt-3">
+            <div class="form-group row justify-content-center my-2">
+                <label class="col-form-label" for="txtNumber">Mobile Wallet Number:</label>
+                <input id="txtNumber" class="form-control ml-2" style="max-width: 320px;" type="tel" pattern="0\d{9}"
+                    maxlength="10" placeholder="0#########" required>
+            </div>
+            <button class="btn btn-primary" type="button" onclick="endPayment('yes')">Pay</button>
+            <button class="btn btn-danger" type="button" onclick="endPayment('no')">Cancel</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script>
+        const transactionId = "<%= _id %>";
+        const form = document.getElementById("form");
+        async function endPayment(accepted) {
+            if (form.reportValidity()) {
+                $.ajax({
+                    url: '/api/end-payment',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: { transactionId, accepted },
+                    success: function (data) {
+                        if (accepted == 'yes') alert("Payment Successful!");
+                        window.location = data.redirectURL;
+                    },
+                    error: function () {
+                        alert("Something went wrong. Please refresh the page and try again.");
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>
