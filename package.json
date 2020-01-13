@@ -4,7 +4,7 @@
   "description": "Web-based Payment Portal",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node main.js"
   },
   "author": "Margaret Farkye & Fataw Adams",
   "license": "ISC",
