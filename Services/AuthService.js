@@ -32,6 +32,7 @@ module.exports = {
             if (!merchant) {
                 // Merchant not found; this means the client ID stored in the token is invalid.
                 res.sendStatus(401); // Unauthorized
+                return;
             }
 
             // Set this property so we can use it in the next middleware
