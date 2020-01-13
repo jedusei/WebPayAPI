@@ -69,8 +69,11 @@
                     dataType: 'json',
                     data: { transactionId, accepted },
                     success: function (data) {
-                        if (accepted == 'yes') alert("Payment Successful!");
-                        window.location = data.redirectURL;
+                        accepted = (accepted == 'yes' ? true : false);
+                        if (accepted) {
+                            alert("Payment Successful!");
+                        }
+                        window.location = data.redirectURL+"/?success="+accepted;
                     },
                     error: function () {
                         alert("Something went wrong. Please refresh the page and try again.");
