@@ -1,4 +1,4 @@
 {
-    "database_url": "mongodb+srv://admin:cqdN501lvpdPvUPa@cluster0-7mtcg.mongodb.net/test?retryWrites=true&w=majority",
+    "database_url": "mongodb+srv://admin:cqdN501lvpdPvUPa@cluster0-7mtcg.mongodb.net/WebPay?retryWrites=true&w=majority",
     "jwt_key": "p5wf3rdsk9"
 }
