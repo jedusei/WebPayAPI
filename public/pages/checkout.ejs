@@ -73,7 +73,7 @@
                         if (accepted) {
                             alert("Payment Successful!");
                         }
-                        window.location = data.redirectURL+"/?success="+accepted;
+                        window.location = data.redirectURL+"?accepted="+accepted;
                     },
                     error: function () {
                         alert("Something went wrong. Please refresh the page and try again.");
