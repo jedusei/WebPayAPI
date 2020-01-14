@@ -45,7 +45,7 @@ module.exports = {
         let merchant = await Merchant.findOne();
         if (accepted == 'no') {
             // User cancelled the payment
-            transaction.status = "Cancelled";
+            await Transaction.deleteOne({_id: transactionId});
         }
         else {
             transaction.status = "Complete"
