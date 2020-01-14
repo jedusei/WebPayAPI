@@ -51,20 +51,20 @@ module.exports = {
             transaction.status = "Complete"
             merchant.accountBalance += transaction.amount; // Update account balance
             await merchant.save();
-        }
+            
+            // Update transaction
+            transaction.date = new Date();
+            await transaction.save();
 
-        // Update transaction
-        transaction.date = new Date();
-        await transaction.save();
-
-        if (merchant.callbackURL) {
-            // Send transaction data to callback url
-            let data = {
-                transactionId,
-                reference: transaction.reference,
-                status: transaction.status,
-            };
-            axios.post(merchant.callbackURL, data).catch(() => { });
+            if (merchant.callbackURL) {
+                // Send transaction data to callback url
+                let data = {
+                    transactionId,
+                    reference: transaction.reference,
+                    status: transaction.status,
+                };
+                axios.post(merchant.callbackURL, data).catch(() => { });
+            }
         }
 
         // Return redirect url so the webpage can redirect
