@@ -36,7 +36,7 @@ module.exports = {
     },
 
     // End a payment transaction
-    endPayment: async ({ transactionId, accepted }) => {
+    endPayment: async ({ transactionId, accepted, phoneNumber }) => {
         // Find and update transaction in database
         let transaction = await Transaction.findOne({ _id: transactionId, type: "Payment", status: "Pending" });
         if (!transaction)
@@ -45,15 +45,16 @@ module.exports = {
         let merchant = await Merchant.findOne();
         if (accepted == 'no') {
             // User cancelled the payment
-            await Transaction.deleteOne({_id: transactionId});
+            await Transaction.deleteOne({ _id: transactionId });
         }
         else {
-            transaction.status = "Complete"
             merchant.accountBalance += transaction.amount; // Update account balance
             await merchant.save();
-            
+
             // Update transaction
+            transaction.status = "Complete"
             transaction.date = new Date();
+            transaction.phoneNumber = phoneNumber;
             await transaction.save();
 
             if (merchant.callbackURL) {
@@ -92,6 +93,7 @@ module.exports = {
             date: new Date,
             type: "Refund",
             referenceTransactionId: transactionId,
+            phoneNumber: transaction.phoneNumber,
             refundReason: reason
         });
         await refund.save();

@@ -16,6 +16,7 @@ const transactionSchema = new Schema({
     amount: Number,
     reference: String,
     status: String,
+    phoneNumber: String,
     // Properties for refund transactions *only*
     referenceTransactionId: SchemaTypes.ObjectId, // The ID of the transaction associated with this refund
     refundReason: String // Reason for refund

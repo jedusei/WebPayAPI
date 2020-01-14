@@ -61,21 +61,22 @@
     <script>
         const transactionId = "<%= _id %>";
         const form = document.getElementById("form");
+        const phoneField = document.getElementById("txtNumber");
         async function endPayment(accepted) {
             if (accepted == 'yes' && !form.reportValidity())
                 return;
-                
+
             $.ajax({
                 url: '/api/end-payment',
                 method: 'POST',
                 dataType: 'json',
-                data: { transactionId, accepted },
+                data: { transactionId, accepted, phoneNumber: phoneField.value },
                 success: function (data) {
                     accepted = (accepted == 'yes' ? true : false);
                     if (accepted) {
                         alert("Payment Successful!");
                     }
-                    window.location = data.redirectURL+"?accepted="+accepted;
+                    window.location = data.redirectURL + "?accepted=" + accepted;
                 },
                 error: function () {
                     alert("Something went wrong. Please refresh the page and try again.");
