@@ -3,13 +3,14 @@ const Merchant = require('../Models/Merchant');
 const axios = require('axios').default;
 module.exports = {
     // Initiate a payment transaction
-    startPayment: async (hostURL, { cart, amount, reference }) => {
+    startPayment: async (hostURL, merchantId, { cart, amount, reference }) => {
         // Validate data
         if (!(cart instanceof Array) || cart === [] || typeof amount != "number")
             throw { httpCode: 400, message: "Bad Request" };
 
         // Create transaction object
         let transaction = new Transaction({
+            merchantId,
             type: "Payment",
             status: "Pending",
             cart, amount, reference
@@ -42,7 +43,7 @@ module.exports = {
         if (!transaction)
             throw { httpCode: 404 }; // Not Found
 
-        let merchant = await Merchant.findOne();
+        let merchant = await Merchant.findOne({ _id: transaction.merchantId });
         if (accepted == 'no') {
             // User cancelled the payment
             await Transaction.deleteOne({ _id: transactionId });
@@ -90,6 +91,7 @@ module.exports = {
 
         // Store record of refund
         let refund = new Transaction({
+            merchantId: merchant._id,
             date: new Date,
             type: "Refund",
             referenceTransactionId: transactionId,
@@ -100,7 +102,7 @@ module.exports = {
     },
 
     // Get transaction history (sorted by date in descending order i.e. latest first)
-    getTransactions: () => {
-        return Transaction.find().sort({ date: -1 }).lean();
+    getTransactions: (merchantId) => {
+        return Transaction.find({ merchantId }).sort({ date: -1 }).lean();
     }
 }

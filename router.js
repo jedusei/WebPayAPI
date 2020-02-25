@@ -18,7 +18,7 @@ router.get('/api/token', async (req, res, next) => {
 router.post('/api/start-payment', AuthService.verifyToken, async (req, res, next) => {
     try {
         let hostURL = `https://${req.get('host')}`;
-        let result = await TransactionService.startPayment(hostURL, req.body);
+        let result = await TransactionService.startPayment(hostURL, req.merchant._id, req.body);
         res.send(result);
     }
     catch (err) {
@@ -67,7 +67,7 @@ router.post('/api/refund', AuthService.verifyToken, async (req, res, next) => {
 // Get transaction history
 router.get('/api/transactions', AuthService.verifyToken, async (req, res, next) => {
     try {
-        let transactions = await TransactionService.getTransactions();
+        let transactions = await TransactionService.getTransactions(req.merchant._id);
         res.send(transactions);
     }
     catch (err) {
