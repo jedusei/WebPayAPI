@@ -50,7 +50,13 @@
             <button class="btn btn-danger" type="button" onclick="endPayment('no')">Cancel</button>
         </form>
     </div>
-
+    <div id="modal"
+        style="visibility:hidden; display: flex; position: fixed; left: 0; top: 0; bottom: 0; right: 0; background-color: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center;">
+        <div class="d-flex rounded bg-white p-4">
+            <img src="../images/spinner.gif" style=" width: 50px;">
+            <span id="txtSuccess" class="ml-4" style="display:none;">Payment Successful!<br>Redirecting...</span>
+        </div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
@@ -62,19 +68,31 @@
         const transactionId = "<%= _id %>";
         const form = document.getElementById("form");
         const phoneField = document.getElementById("txtNumber");
+        const modal = document.getElementById("modal");
+        const txtSuccess = document.getElementById("txtSuccess");
         async function endPayment(accepted) {
             if (accepted == 'yes' && !form.reportValidity())
                 return;
 
+            modal.style.visibility = 'visible';
             $.ajax({
                 url: '/api/end-payment',
                 method: 'POST',
                 dataType: 'json',
                 data: { transactionId, accepted, phoneNumber: phoneField.value },
                 success: function (data) {
-                    window.location.href = data.redirectURL + "/?accepted=" + (accepted == 'yes');
+                    if (accepted != 'yes')
+                        window.location.href = data.redirectURL + "/?accepted=false";
+                    else {
+                        txtSuccess.style.display = 'block';
+                        setTimeout(() => {
+                            window.location.href = data.redirectURL + "/?accepted=true";
+                        }, 1000);
+                    }
                 },
                 error: function () {
+                    modal.style.visibility = 'hidden';
+                    txtSuccess.style.display = 'none';
                     alert("Something went wrong. Please refresh the page and try again.");
                 }
             });
