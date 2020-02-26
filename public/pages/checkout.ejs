@@ -72,11 +72,7 @@
                 dataType: 'json',
                 data: { transactionId, accepted, phoneNumber: phoneField.value },
                 success: function (data) {
-                    accepted = (accepted == 'yes' ? true : false);
-                    if (accepted) {
-                        alert("Payment Successful!");
-                    }
-                    window.location = data.redirectURL + "?accepted=" + accepted;
+                    window.location.href = data.redirectURL + "/?accepted=" + (accepted == 'yes');
                 },
                 error: function () {
                     alert("Something went wrong. Please refresh the page and try again.");
