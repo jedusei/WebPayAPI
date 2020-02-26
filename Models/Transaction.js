@@ -11,6 +11,7 @@ const cartItemSchema = new Schema({
 const transactionSchema = new Schema({
     date: Date,
     merchantId: SchemaTypes.ObjectId,
+    redirectURL: String,
     type: String, // Either 'Payment' or 'Refund'
     phoneNumber: String, // Mobile Wallet number that the money was paid from or paid into
     // Properties for normal transactions *only*

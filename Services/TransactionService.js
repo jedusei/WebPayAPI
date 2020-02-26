@@ -3,7 +3,7 @@ const Merchant = require('../Models/Merchant');
 const axios = require('axios').default;
 module.exports = {
     // Initiate a payment transaction
-    startPayment: async (hostURL, merchantId, { cart, amount, reference }) => {
+    startPayment: async (hostURL, merchantId, { cart, amount, reference, redirectURL }) => {
         // Validate data
         if (!(cart instanceof Array) || cart === [] || typeof amount != "number")
             throw { httpCode: 400, message: "Bad Request" };
@@ -11,6 +11,7 @@ module.exports = {
         // Create transaction object
         let transaction = new Transaction({
             merchantId,
+            redirectURL,
             type: "Payment",
             status: "Pending",
             cart, amount, reference
@@ -56,6 +57,7 @@ module.exports = {
             transaction.status = "Complete"
             transaction.date = new Date();
             transaction.phoneNumber = phoneNumber;
+            delete transaction.redirectURL;
             await transaction.save();
 
             if (merchant.callbackURL) {
@@ -70,7 +72,7 @@ module.exports = {
         }
 
         // Return redirect url so the webpage can redirect
-        return { redirectURL: merchant.redirectURL };
+        return { redirectURL: transaction.redirectURL || merchant.redirectURL };
     },
 
     // Refund a sale
