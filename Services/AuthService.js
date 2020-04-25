@@ -1,7 +1,6 @@
 const Merchant = require('../Models/Merchant');
 const InvalidCredentialsError = { httpCode: 400, message: "Invalid Credentials" };
 const jwt = require('jsonwebtoken');
-const config = require('../config');
 module.exports = {
     // Get an access token to use with the other API routes
     getToken: async (clientId, clientSecret) => {
@@ -19,7 +18,7 @@ module.exports = {
         // Create and return an access token that expires in an hour
         return {
             bestBefore: Date.now() + 3600000,
-            token: jwt.sign({ clientId }, config['jwt_key'], { expiresIn: 3600 })
+            token: jwt.sign({ clientId }, process.env.JWT_KEY, { expiresIn: 3600 })
         };
     },
     // Verify the bearer token used in the request
@@ -27,7 +26,7 @@ module.exports = {
         try {
             // Header is in the form "Bearer <token>"
             let token = req.headers['authorization'].substring(7);
-            let tokenData = jwt.verify(token, config['jwt_key'], { ignoreExpiration: true });
+            let tokenData = jwt.verify(token, process.env.JWT_KEY, { ignoreExpiration: true });
             let merchant = await Merchant.findById(tokenData.clientId);
             if (!merchant) {
                 // Merchant not found; this means the client ID stored in the token is invalid.

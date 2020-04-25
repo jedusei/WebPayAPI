@@ -18,8 +18,7 @@ app.use((err, req, res, next) => {
 
 // Connect to MongoDB database
 const mongoose = require('mongoose');
-const config = require('./config');
-mongoose.connect(config["database_url"], { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
     .then(() => {
         // Start server application
         app.listen(process.env.PORT || 1234, () => {
